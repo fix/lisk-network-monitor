@@ -12,11 +12,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://code.jquery.com/jquery-2.2.2.min.js" integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js" crossorigin="anonymous"></script>
-
-
+    <script src="https://code.jquery.com/jquery-2.2.2.min.js" integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI=" crossorigin="anonymous"></script>
   </head>
   <body>
     <section class="page-header" style="margin:0;padding:50px;">
@@ -27,14 +24,11 @@
 
     <section class="container">
       <h1 class="text-center"><span id="health">0</span>% of network in sync with height <span id="height"></span></h1>
-      <div class="col-lg-12"><br></div>
-      <canvas id="barChart" class="col-lg-6" width="400" height="200"></canvas>
-      <canvas id="lineChart" class="col-lg-6" width="400" height="200"></canvas>
-
       <div id="peers" class="col-lg-12">
 
       </div>
       <footer class="site-footer">
+        <a href="" id="getjson">get json</a>
         <span class="site-footer-owner"><a href="https://github.com/fix/lisk-network-monitor">Lisk Network Monitor</a> is maintained by <a href="https://github.com/fix">fix</a>.</span>
 
       </footer>
@@ -42,17 +36,19 @@
     </section>
 
     <script>
-      window.chartdata=[];
-      window.chartlabels=[];
       window.syncdata=[];
-      window.chartheights=[];
-      window.charttime=[];
       $(window).ready(function(){
         checkPeers();
         setTimeout(function(){
           displayPeers();
         }, 2000);
       });
+
+      $('a#getjson').click(function(e) {
+        e.preventDefault();  //stop the browser from following
+        document.write(JSON.stringify(window.syncdata));
+        document.close();
+    });
 
       function checkPeers(){
         window.syncdata=[];
@@ -75,78 +71,13 @@
       }
 
 
-      function chartPeers(){
-        var data = {
-            labels: window.chartlabels,
-            datasets: [
-                {
-                    label: "Network Heights",
-                    fillColor: "rgba(220,220,220,0.5)",
-                    strokeColor: "rgba(220,220,220,0.8)",
-                    highlightFill: "rgba(220,220,220,0.75)",
-                    highlightStroke: "rgba(220,220,220,1)",
-                    data: window.chartdata
-                }
-            ]
-        };
-        var ctx = $("#barChart").get(0).getContext("2d");
-        var myBarChart = new Chart(ctx).Bar(data, {animation: false});
-
-        data = {
-            labels: window.charttime,
-            datasets: [
-                {
-                    label: "My First dataset",
-                    fillColor: "rgba(220,220,220,0.2)",
-                    strokeColor: "rgba(220,220,220,1)",
-                    pointColor: "rgba(220,220,220,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(220,220,220,1)",
-                    data: window.chartheights
-                }
-            ]
-        };
-
-        ctx = $("#lineChart").get(0).getContext("2d");
-        var myLineChart = new Chart(ctx).Line(data, {animation: false});
-      }
-
       function displayPeers(){
-        window.chartlabels=[];
-        window.chartdata=[];
-        var height=10000000000;
-        var health=0;
-        var first=true;
-        var count=-1;
         $("#peers").html("");
         window.syncdata=window.syncdata.sort(function(a,b){
           return b.height-a.height
         });
-        for(var i in window.syncdata){
-          var sync=window.syncdata[i];
-          if(sync.height<height){
-            window.chartlabels.push(sync.height);
-            window.chartdata.push(0);
-            count=window.chartdata.length-1;
-            $("#peers").append("<h2>"+sync.height+"</h2>| ");
-            if(first&&(health>1)){
-              console.log(health);
-              first=false;
-              $("#health").html((health*100/window.syncdata.length).toFixed(0));
-            }
-            if(first){
-              window.charttime.push(window.charttime.length*10);
-              window.chartheights.push(sync.height);
-              $("#height").html(sync.height);
-            }
-            height=sync.height;
-          }
-          window.chartdata[count]=window.chartdata[count]+1;
-          health++;
-          $("#peers").append("<b>"+sync.ip+"</b> | ");
-        }
-        chartPeers();
+        document.write(JSON.stringify(window.syncdata));
+        document.close();
       }
 
 
