@@ -90,7 +90,7 @@
             ]
         };
         var ctx = $("#barChart").get(0).getContext("2d");
-        var myBarChart = new Chart(ctx).Bar(data, {animation: false});
+        var myBarChart = new Chart(ctx).Bar(data, {animation: false,showTooltips:false});
 
         data = {
             labels: window.charttime,
@@ -109,7 +109,7 @@
         };
 
         ctx = $("#lineChart").get(0).getContext("2d");
-        var myLineChart = new Chart(ctx).Line(data, {animation: false});
+        var myLineChart = new Chart(ctx).Line(data, { pointDot : false,showTooltips:false,animation: false});
       }
 
       function displayPeers(){
@@ -136,7 +136,7 @@
               $("#health").html((health*100/window.syncdata.length).toFixed(0));
             }
             if(first){
-              window.charttime.push(window.charttime.length*10);
+              window.charttime.push("");
               window.chartheights.push(sync.height);
               $("#height").html(sync.height);
             }
