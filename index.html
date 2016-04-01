@@ -8,6 +8,12 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-2.2.2.min.js" integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI=" crossorigin="anonymous"></script>
   </head>
   <body>
     <section class="page-header">
@@ -16,10 +22,14 @@
       <a href="https://github.com/fix/lisk-network-monitor" class="btn">View source on GitHub</a>
     </section>
 
-    <section class="main-content">
+    <section class="container">
       <h3>
 <a id="welcome-to-lisk-network-monitor" class="anchor" href="#welcome-to-lisk-network-monitor" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to LISK NETWORK MONITOR.</h3>
 
+
+      <div id="peers" class="col-lg-12">
+
+      </div>
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/fix/lisk-network-monitor">Lisk Network Monitor</a> is maintained by <a href="https://github.com/fix">fix</a>.</span>
 
@@ -27,6 +37,47 @@
 
     </section>
 
-  
+    <script>
+      window.syncdata=[];
+      $(window).ready(function(){
+        checkPeers();
+      });
+
+      function checkPeers(){
+        window.syncdata=[];
+        $.get("http://146.148.9.213:7000/api/peers").success(function(data){
+          data.peers.forEach(function(peer){
+            $.get("http://"+peer.ip+":"+peer.port+"/api/loader/status/sync").success(function(data2){
+              data2.ip=peer.ip;
+              window.syncdata.push(data2);
+            });
+          });
+        });
+        setTimeout(function(){
+          displayPeers();
+          checkPeers();
+        }, 10000);
+      }
+
+
+      function displayPeers(){
+        var height=10000000000;
+        $("#peers").html("");
+        window.syncdata=window.syncdata.sort(function(a,b){
+          return b.height-a.height
+        });
+        for(var i in window.syncdata){
+          var sync=window.syncdata[i];
+          if(sync.height<height){
+            $("#peers").append("<h2>"+sync.height+"</h2>");
+            height=sync.height;
+          }
+          $("#peers").append("<b>"+sync.ip+" | </b>");
+        }
+      }
+
+
+    </script>
+
   </body>
 </html>
