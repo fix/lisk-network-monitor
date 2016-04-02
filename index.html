@@ -47,6 +47,8 @@
       window.syncdata=[];
       window.chartheights=[];
       window.charttime=[];
+      window.charttime.push("");
+      window.chartheights.push(0);
       $(window).ready(function(){
         checkPeers();
         setTimeout(function(){
@@ -116,6 +118,7 @@
         window.chartlabels=[];
         window.chartdata=[];
         var height=10000000000;
+        var highestHeight=0;
         var health=0;
         var first=true;
         var count=-1;
@@ -131,21 +134,24 @@
             count=window.chartdata.length-1;
             $("#peers").append("<h2>"+sync.height+"</h2>| ");
             if(first&&(health>1)){
-              console.log(health);
               first=false;
-              $("#health").html((health*100/window.syncdata.length).toFixed(0));
+              highestHeight=sync.height;
             }
             if(first){
-              window.charttime.push("");
-              window.chartheights.push(sync.height);
               $("#height").html(sync.height);
             }
             height=sync.height;
           }
+          if(highestHeight-sync.height<2){
+            health++;
+          }
           window.chartdata[count]=window.chartdata[count]+1;
-          health++;
+
           $("#peers").append("<b>"+sync.ip+"</b> | ");
         }
+        $("#health").html((health*100/window.syncdata.length).toFixed(0));
+        window.charttime.push("");
+        window.chartheights.push((health*100/window.syncdata.length));
         chartPeers();
       }
 
