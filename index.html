@@ -111,7 +111,7 @@
         };
 
         ctx = $("#lineChart").get(0).getContext("2d");
-        var myLineChart = new Chart(ctx).Line(data, { pointDot : false,showTooltips:false,animation: false});
+        var myLineChart = new Chart(ctx).Line(data, { scaleShowGridLines : false, pointDot : false,showTooltips:false,animation: false});
       }
 
       function displayPeers(){

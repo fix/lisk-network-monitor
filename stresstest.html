@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Lisk Network Monitor by fix</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://code.jquery.com/jquery-2.2.2.min.js" integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js" crossorigin="anonymous"></script>
+
+
+  </head>
+  <body>
+    <section class="page-header" style="margin:0;padding:50px;">
+      <h1 class="project-name">Lisk Network Monitor</h1>
+      <h2 class="project-tagline">Better understanding of the LISK crypto network</h2>
+      <a href="https://github.com/fix/lisk-network-monitor" class="btn">View source on GitHub</a>
+    </section>
+
+    <section class="container">
+      <h1 class="text-center">Stress testing the testnet</h1>
+      <div class="alert alert-danger">
+        This is dangerous tool for you! If you use it too much, you may be banned by your own ISP. If you don't understand what it is, do not use! <br>
+        <h2>Use with caution !</h2>
+      </div>
+
+      <div class="col-lg-4">
+        <h1>Test 1</h1>
+        Simple test posting dummy payloads on "/api/transactions/". Tne objective is to test resistance to simple server loading.
+        <button id="start1" class="btn btn-danger">Start Simple Loading</button>
+        <h2 id="result1"></h2> Peers flooded.
+      </div>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/fix/lisk-network-monitor">Lisk Network Monitor</a> is maintained by <a href="https://github.com/fix">fix</a>.</span>
+
+      </footer>
+
+    </section>
+
+    <script>
+      $("#start1").click(function(){
+        $.get("https://login.lisk.io/api/peers").success(function(data){
+          data.peers.forEach(function(peer){
+            test1(peer,0);
+          });
+        });
+      });
+
+      function test1(peer,i){
+        if(i>10){
+          return;
+        }
+        else{
+          $.ajax({
+            url: "http://"+peer.ip+":"+peer.port+'/peer/transactions',
+            data: { transaction: {"dummy":"asdfasdfasdfasdasfas"} },
+            type: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'os': 'windows3.1',
+              'version': '0.1.1',
+              'port': 1,
+              'share-port': 0
+            }
+          });
+          setTimeout(function(){
+             test1(peer,i+1)
+          }, 100);
+        }
+      }
+
+
+    </script>
+
+  </body>
+</html>
