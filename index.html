@@ -50,30 +50,35 @@
       window.charttime.push("");
       window.chartheights.push(0);
       $(window).ready(function(){
-        checkPeers();
-        setTimeout(function(){
-          displayPeers();
-        }, 2000);
+        ticker();
       });
 
-      function checkPeers(){
-        window.syncdata=[];
-        $.get("https://login.lisk.io/api/peers").success(function(data){
-          data.peers.forEach(function(peer){
-            $.get("http://"+peer.ip+":"+peer.port+"/api/loader/status/sync").success(function(data2){
-              data2.ip=peer.ip;
-              window.syncdata.push(data2);
-            });
-          });
-        });
-        $.get("https://login.lisk.io/api/loader/status/sync").success(function(data2){
-          data2.ip="<span class='text-danger'>login.lisk.io</span>";
-          window.syncdata.push(data2);
-        });
+      function ticker(){
         setTimeout(function(){
           displayPeers();
           checkPeers();
-        }, 20000);
+        },100);
+        setTimeout(function(){
+          ticker();
+        },20000);
+      }
+
+      function checkPeers(){
+        window.syncdata=[];
+        $.get("https://testnet.lisk.io/api/peers").success(function(data){
+          data.peers.forEach(function(peer){
+            if(peer.port>79){
+              $.get("http://"+peer.ip+":"+peer.port+"/api/loader/status/sync").success(function(data2){
+                data2.ip=peer.ip;
+                window.syncdata.push(data2);
+              });
+            }
+          });
+        });
+        $.get("https://testnet.lisk.io/api/loader/status/sync").success(function(data2){
+          data2.ip="<span class='text-danger'>testnet.lisk.io</span>";
+          window.syncdata.push(data2);
+        });
       }
 
 

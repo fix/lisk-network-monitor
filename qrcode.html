@@ -26,14 +26,15 @@
     </section>
 
     <section class="container">
-      Address: <input id="address" type="text" value="" placeholder="your address" style="width:80%" /><br />
-      <div id="qrcode"></div>
-      <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/fix/lisk-network-monitor">Lisk QR Generator</a> is maintained by <a href="https://github.com/fix">fix</a>.</span>
+      <input id="address" class="col-lg-6" type="text" value="" placeholder="your lisk address"/><br />
+      <div class="col-lg-6" id="qrcode"></div>
 
-      </footer>
 
     </section>
+    <footer class="site-footer">
+      <span class="site-footer-owner"><a href="https://github.com/fix/lisk-network-monitor">Lisk QR Generator</a> is maintained by <a href="https://github.com/fix">fix</a>.</span>
+
+    </footer>
 
     <script>
     var qrcode = new QRCode("qrcode");
@@ -42,8 +43,9 @@
     	var elText = document.getElementById("address");
 
     	if (!elText.value) {
-    		alert("Input a text");
-    		elText.focus();
+    		return;
+    	}
+      if (!elText.value.endsWith("L")) {
     		return;
     	}
 
