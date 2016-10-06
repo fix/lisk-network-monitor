@@ -20,9 +20,9 @@
   </head>
   <body>
     <section class="page-header" style="margin:0;padding:50px;">
-      <h1 class="project-name">Lisk Network Monitor</h1>
-      <h2 class="project-tagline">Better understanding of the LISK crypto network</h2>
-      <a href="https://github.com/fix/lisk-network-monitor" class="btn">View source on GitHub</a>
+      <h1 class="project-name">Lisk Network Monitor (Mainnet)</h1>
+      <h2 class="project-tagline">Better understanding of the LISK crypto network (Might take a few seconds to load, hang tight!)</h2>
+      <a href="https://github.com/Doweig/lisk-network-monitor" class="btn">View source on GitHub</a>
     </section>
 
     <section class="container">
@@ -35,7 +35,7 @@
 
       </div>
       <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/fix/lisk-network-monitor">Lisk Network Monitor</a> is maintained by <a href="https://github.com/fix">fix</a>.</span>
+        <span class="site-footer-owner"><a href="https://github.com/fix/lisk-network-monitor">Lisk Network Monitor</a> is maintained by <a href="https://github.com/fix">fix</a>, deployed on mainnet by <a href="https://github.com/doweig">Doweig</a>, API provided by <a href="https://github.com/Phoenix1969">Phoenix1969</a>.</span>
 
       </footer>
 
@@ -65,7 +65,7 @@
 
       function checkPeers(){
         window.syncdata=[];
-        $.get("https://testnet.lisk.io/api/peers?state=2").success(function(data){
+        $.get("https://lisk.liskwallet.io/api/peers?state=2").success(function(data){
           data.peers.forEach(function(peer){
             if(peer.port>79){
               $.get("http://"+peer.ip+":"+peer.port+"/api/loader/status/sync").success(function(data2){
@@ -76,8 +76,8 @@
             }
           });
         });
-        $.get("https://testnet.lisk.io/api/loader/status/sync").success(function(data2){
-          data2.ip="<span class='text-danger'>testnet.lisk.io</span>";
+        $.get("https://lisk.liskwallet.io/api/loader/status/sync").success(function(data2){
+          data2.ip="<span class='text-danger'>lisk.io</span>";
           window.syncdata.push(data2);
         });
       }
