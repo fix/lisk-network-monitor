@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Lisk Network Monitor by fix</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-2.2.2.min.js" integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI=" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <section class="page-header" style="margin:0;padding:50px;">
+      <h1 class="project-name">Lisk Network Monitor</h1>
+      <h2 class="project-tagline">Better understanding of the LISK crypto network</h2>
+      <a href="https://github.com/fix/lisk-network-monitor" class="btn">View source on GitHub</a>
+    </section>
+
+    <section class="container">
+      <h1 class="text-center"><span id="health">0</span>% of network in sync with height <span id="height"></span></h1>
+      <div id="peers" class="col-lg-12">
+
+      </div>
+      <footer class="site-footer">
+        <a href="" id="getjson">get json</a>
+        <span class="site-footer-owner"><a href="https://github.com/fix/lisk-network-monitor">Lisk Network Monitor</a> is maintained by <a href="https://github.com/fix">fix</a>.</span>
+
+      </footer>
+
+    </section>
+
+    <script>
+      window.syncdata=[];
+      $(window).ready(function(){
+        checkPeers();
+        setTimeout(function(){
+          displayPeers();
+        }, 2000);
+      });
+
+      $('a#getjson').click(function(e) {
+        e.preventDefault();  //stop the browser from following
+        document.write(JSON.stringify(window.syncdata));
+        document.close();
+    });
+
+      function checkPeers(){
+        window.syncdata=[];
+        $.get("https://login.lisk.io/api/peers").success(function(data){
+          data.peers.forEach(function(peer){
+            $.get("http://"+peer.ip+":"+peer.port+"/api/loader/status/sync").success(function(data2){
+              data2.ip=peer.ip;
+              window.syncdata.push(data2);
+            });
+          });
+        });
+        $.get("https://login.lisk.io/api/loader/status/sync").success(function(data2){
+          data2.ip="<span class='text-danger'>login.lisk.io</span>";
+          window.syncdata.push(data2);
+        });
+        setTimeout(function(){
+          displayPeers();
+          checkPeers();
+        }, 10000);
+      }
+
+
+      function displayPeers(){
+        $("#peers").html("");
+        window.syncdata=window.syncdata.sort(function(a,b){
+          return b.height-a.height
+        });
+        document.write(JSON.stringify(window.syncdata));
+        document.close();
+      }
+
+
+    </script>
+
+  </body>
+</html>
